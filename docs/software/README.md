@@ -180,9 +180,9 @@ INSERT INTO `db-theme-3`.`Request` (`id`, `name`, `time`, `description`, `Histor
 COMMIT;
 START TRANSACTION;
 USE `db-theme-3`;
-INSERT INTO `db-theme-3`.`User` (`id`, `name`, `lastname`, `mail`, `password`,`Role.id`) VALUES (1, 'Swc', 'frc', 'Swc@gmail.com', '123', 1);
-INSERT INTO `db-theme-3`.`User` (`id`, `name`, `lastname`, `mail`, `password`,`Role.id`) VALUES (2, 'fewc', 'Swc', 'fewc@gmail.com', '321', 2);
-INSERT INTO `db-theme-3`.`User` (`id`, `name`, `lastname`, `mail`, `password`,`Role.id`) VALUES (3, 'Gdwc', 'oirwc','Gdwc@gmail.com', '123456', 3);
+INSERT INTO `db-theme-3`.`User` (`id`, `username`, `email`, `password`,`Role.id`) VALUES (1, 'Swc', 'Swc@gmail.com', '123', 1);
+INSERT INTO `db-theme-3`.`User` (`id`, `username`, `email`, `password`,`Role.id`) VALUES (2, 'fewc', 'fewc@gmail.com', '321', 2);
+INSERT INTO `db-theme-3`.`User` (`id`, `username`, `email`, `password`,`Role.id`) VALUES (3, 'Gdwc','Gdwc@gmail.com', '123456', 3);
 COMMIT;
 
 START TRANSACTION;
