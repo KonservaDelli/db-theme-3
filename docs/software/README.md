@@ -379,7 +379,7 @@ class AppError extends Error {
   }
 }
 module.exports = AppError;
-
+```
 ```
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
