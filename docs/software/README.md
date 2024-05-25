@@ -1,7 +1,7 @@
 # Реалізація інформаційного та програмного забезпечення
 
 В рамках проекту розробляється: 
-##- SQL-скрипт для створення на початкового наповнення бази даних
+## - SQL-скрипт для створення на початкового наповнення бази даних
 ```sql
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
@@ -225,7 +225,7 @@ INSERT INTO `db-theme-3`.`SupportRequest` (`SupportRequest.id`, `SupportRequest.
 INSERT INTO `db-theme-3`.`SupportRequest` (`SupportRequest.id`, `SupportRequest.isAnswered`, `SupportRequest.type`, `User_User.id`, `History_History.id`) VALUES (3, 1, 'cde', 1, 1);
 COMMIT;
 ```
-##- RESTfull сервіс для управління даними
+## - RESTfull сервіс для управління даними
 **Налаштування Express сервера**
 
 ```
