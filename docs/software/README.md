@@ -219,184 +219,146 @@ INSERT INTO `db-theme-3`.`role` (`id`, `name`) VALUES (2, 'Interviewer');
 COMMIT;
 
 ```
-## - RESTfull сервіс для управління даними
-**Налаштування Express сервера**
+# - RESTfull сервіс для управління даними
+## Файл підключення до бази даних
 
+```js
+const mysql = require('mysql');
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'Rfyfky11*',
+    database: 'db-theme-3'
+});
+
+module.exports = db;
 ```
-const express = require("express");
-const cors = require("cors");
-const router = require("./routes");
-const AppError = require("./utils/appError");
-const errorHandler = require("./utils/errorHandler");
+## Кореневий файл серверу
 
+```js
+const db = require('./config/db_connection');
+const express = require('express');
 const app = express();
-// Use express.json() middleware to parse the URL encoded body
+
+const PORT = 3500;
+
 app.use(express.json());
-app.use(cors());
-app.use("/api", router);
 
-app.all("*", (req, res, next) => {
-  next(new AppError(`The URL ${req.originalUrl} does not exists`, 404));
-});
-app.use(errorHandler);
+app.use('/api', require('./routes/apiRoute'));
 
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`);
-});
-
-module.exports = app;
+db.connect(() => app.listen(PORT, () => console.log(`Server is running on port ${PORT}`)));
 ```
 
-**Підключення до бази даних MySQL**
-```
-const mysql = require("mysql");
-const conn = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root123",
-  database: "HV-IO-21",
-});
+##  Файл з роутером
 
-conn.connect();
-
-module.exports = conn;
-```
-
-**Створення контролерів додатка**
-```
-const AppError = require("../utils/appError");
-const conn = require("../services/db");
-
-exports.getAllUsers = (req, res, next) => {
-  conn.query("SELECT * FROM User", function (err, data, fields) {
-    if (err) return next(new AppError(err));
-    res.status(200).json({
-      status: "success",
-      length: data?.length,
-      data: data,
-    });
-  });
-};
-
-exports.createUser = (req, res, next) => {
-  if (!req.body) return next(new AppError("No form data found", 404));
-  const values = [
-    req.body.username,
-    req.body.email,
-    req.body.password,
-    req.body.Role,
-  ];
-  conn.query(
-    "INSERT INTO User (username, email, password, Role) VALUES(?)",
-    [values],
-    function (err, data, fields) {
-      if (err) return next(new AppError(err, 500));
-      res.status(201).json({
-        status: "success",
-        message: "user added!",
-      });
-    }
-  );
-};
-
-exports.getUserById = (req, res, next) => {
-  if (!req.params.id) {
-    return next(new AppError("No user id found", 404));
-  }
-  conn.query(
-    "SELECT * FROM User WHERE id = ?",
-    [req.params.id],
-    function (err, data, fields) {
-      if (err) return next(new AppError(err, 500));
-      res.status(200).json({
-        status: "success",
-        length: data?.length,
-        data: data,
-      });
-    }
-  );
-};
-
-exports.updateUser = (req, res, next) => {
-  if (!req.params.id) {
-    return next(new AppError("No user id found", 404));
-  }
-  conn.query(
-    "UPDATE User SET username=?, email=?, password=?, Role=? WHERE id=?",
-    [
-      req.body.username,
-      req.body.email,
-      req.body.password,
-      req.body.Role,
-      req.params.id,
-    ],
-    function (err, data, fields) {
-      if (err) return next(new AppError(err, 500));
-      res.status(201).json({
-        status: "success",
-        message: "user info updated!",
-      });
-    }
-  );
-};
-
-exports.deleteUser = (req, res, next) => {
-  if (!req.params.id) {
-    return next(new AppError("No todo id found", 404));
-  }
-  conn.query(
-    "DELETE FROM User WHERE id=?",
-    [req.params.id],
-    function (err, fields) {
-      if (err) return next(new AppError(err, 500));
-      res.status(201).json({
-        status: "success",
-        message: "user deleted!",
-      });
-    }
-  );
-};
-```
-
-**Створення глобальних обробників помилок**
-```
-class AppError extends Error {
-  constructor(msg, statusCode) {
-    super(msg);
-
-    this.statusCode = statusCode;
-    this.error = `${statusCode}`.startsWith("4") ? "fail" : "error";
-    this.isOperational = true;
-
-    Error.captureStackTrace(this, this.constructor);
-  }
-}
-module.exports = AppError;
-```
-```
-module.exports = (err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || "error";
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-};
-```
-
-**Створення routes**
-
-```
-const express = require("express");
-const controllers = require("../controllers");
+ ```js
+ const express = require("express");
 const router = express.Router();
+const { getAllUsers, AddNewUser, getUser, updateUser, deleteUser } = require("../controllers/apiController");
 
-router.route("/User").get(controllers.getAllUsers).post(controllers.createUser);
 router
-  .route("/User/:id")
-  .get(controllers.getUserById)
-  .put(controllers.updateUser)
-  .delete(controllers.deleteUser);
+  .get("/users", getAllUsers)
+  .get("/user/:id", getUser)
+  .post("/user", AddNewUser)
+  .put("/user/:id", updateUser)
+  .delete("/user/:id", deleteUser);
+
 module.exports = router;
+
+ ```
+
+##  Файл контролерів для обробки запитів
+
+```js
+const db = require("../config/db_connection");
+
+const getAllUsers = (req, res) => {
+  const query = "SELECT * FROM users";
+  db.query(query, (err, result) => {
+    if (err) return res.status(500).json(err);
+    res.status(200).json(result);
+  });
+};
+
+const getUser = (req, res) => {
+  const query = `SELECT * FROM users WHERE id=${req.params.id}`;
+  db.query(query, (err, result) => {
+    if (err) return res.status(500).json(err);
+    if (result.length === 0) return res.sendStatus(404);
+    res.status(200).json(result[0]);
+  });
+};
+
+const AddNewUser = (req, res) => {
+  const { username, email, password, role_id } = req.body;
+  if (!(username && email && password))
+    return res
+      .status(400)
+      .json({ message: "Username, email and password required" });
+     const queryToFindUser = `SELECT * FROM users WHERE email="${email}"`;
+      db.query(queryToFindUser, (err, result) =>{
+        if (err) return res.status(500).json(err);
+        if (result.length !== 0) return res.status(406).json('There is already user with this email');
+  const query = "INSERT INTO users SET ?";
+  const user = {
+    username,
+    email,
+    password,
+    role_id: role_id || 1,
+  };
+  db.query(query, user, (err) => {
+    if (err) return res.status(500).json(err);
+    res.status(201).json({ message: "New user created" });
+  });
+});
+};
+
+const updateUser = (req, res) => {
+  const { username, email, password } = req.body;
+  if (!(username || email || password)){
+    res
+    .status(400)
+    .json({ message: "Username, email or password  required " });
+    return
+  }
+  db.query(`SELECT * FROM users WHERE id=${req.params.id}`, (err, result) =>{
+    if (err) return res.status(500).json(err);
+    if (result.length === 0) return res.status(404).json('No user with this id');
+  let query = "";
+  if (username) {
+    query = `UPDATE users SET username = '${req.body.username}' WHERE id = '${req.params.id}'`;
+    db.query(query, (err) => {
+      if (err) return res.status(500).json(err);
+    });
+  }
+  if (email) {
+    query = `UPDATE users SET email = '${req.body.email}' WHERE id = '${req.params.id}'`;
+    db.query(query, (err) => {
+      if (err) return res.status(500).json(err);
+    });
+  }
+  if (password) {
+    query = `UPDATE users SET password = '${req.body.password}' WHERE id = '${req.params.id}'`;
+    db.query(query, (err) => {
+      if (err) return res.status(500).json(err);
+    });
+  }
+  res.status(200).json({ message: "User updated" });
+});
+};
+
+const deleteUser = (req, res) => {
+  const query = `DELETE FROM users WHERE id=${req.params.id}`;
+  db.query(`SELECT * FROM users WHERE id=${req.params.id}`, (err, result) =>{
+    if (err) return res.status(500).json(err);
+    if (result.length === 0) return res.status(404).json('No user with this id');
+  db.query(query, (err, result) => {
+    if (err) return res.status(500).json(err);
+    return res.status(200).json({ message: "User deleted" });
+  });
+  });
+};
+
+module.exports = { getAllUsers, AddNewUser, getUser, updateUser, deleteUser };
 ```
