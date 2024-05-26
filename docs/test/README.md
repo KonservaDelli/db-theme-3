@@ -4,7 +4,7 @@
 ## Створення користувача
 ![creating user](one.jpg)
 ## Редагування користувача за id
-![update user](two.ipg)
+![update user](two.jpg)
 ## Видалення користувача
 ![delete user](three.jpg)
 ## Відобразити користувача за id
