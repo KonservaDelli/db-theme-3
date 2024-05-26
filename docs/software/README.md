@@ -2,6 +2,7 @@
 
 В рамках проекту розробляється: 
 ## - SQL-скрипт для створення на початкового наповнення бази даних
+```
 -- MySQL Workbench Forward Engineering
 
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
@@ -216,6 +217,8 @@ INSERT INTO `db-theme-3`.`role` (`id`, `name`) VALUES (1, 'Respondent');
 INSERT INTO `db-theme-3`.`role` (`id`, `name`) VALUES (2, 'Interviewer');
 
 COMMIT;
+
+```
 ## - RESTfull сервіс для управління даними
 **Налаштування Express сервера**
 
