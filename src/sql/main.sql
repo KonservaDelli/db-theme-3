@@ -5,19 +5,19 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema db-theme-3
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema db-theme-3
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `db-theme-3` DEFAULT CHARACTER SET utf8 ;
+USE `db-theme-3` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`role`
+-- Table `db-theme-3`.`role`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`role` (
+CREATE TABLE IF NOT EXISTS `db-theme-3`.`role` (
   `id` INT NOT NULL,
   `name` ENUM('Respondent', 'Interviewer') NOT NULL,
   PRIMARY KEY (`id`))
@@ -25,9 +25,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`users`
+-- Table `db-theme-3`.`users`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`users` (
+CREATE TABLE IF NOT EXISTS `db-theme-3`.`users` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
@@ -38,16 +38,16 @@ CREATE TABLE IF NOT EXISTS `mydb`.`users` (
   INDEX `fk_users_role1_idx` (`role_id` ASC) VISIBLE,
   CONSTRAINT `fk_users_role1`
     FOREIGN KEY (`role_id`)
-    REFERENCES `mydb`.`role` (`id`)
+    REFERENCES `db-theme-3`.`role` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`quizes`
+-- Table `db-theme-3`.`quizes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`quizes` (
+CREATE TABLE IF NOT EXISTS `db-theme-3`.`quizes` (
   `id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `title` VARCHAR(45) NOT NULL,
@@ -59,9 +59,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`questions`
+-- Table `db-theme-3`.`questions`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`questions` (
+CREATE TABLE IF NOT EXISTS `db-theme-3`.`questions` (
   `id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `description` VARCHAR(45) NOT NULL,
@@ -73,16 +73,16 @@ CREATE TABLE IF NOT EXISTS `mydb`.`questions` (
   INDEX `fk_questions_quizes1_idx` (`quizes_id` ASC) VISIBLE,
   CONSTRAINT `fk_questions_quizes1`
     FOREIGN KEY (`quizes_id`)
-    REFERENCES `mydb`.`quizes` (`id`)
+    REFERENCES `db-theme-3`.`quizes` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`options`
+-- Table `db-theme-3`.`options`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`options` (
+CREATE TABLE IF NOT EXISTS `db-theme-3`.`options` (
   `id` INT NOT NULL,
   `text` VARCHAR(45) NOT NULL,
   `iscorrect` TINYINT NULL,
@@ -91,16 +91,16 @@ CREATE TABLE IF NOT EXISTS `mydb`.`options` (
   INDEX `fk_options_questions1_idx` (`questions_id` ASC) VISIBLE,
   CONSTRAINT `fk_options_questions1`
     FOREIGN KEY (`questions_id`)
-    REFERENCES `mydb`.`questions` (`id`)
+    REFERENCES `db-theme-3`.`questions` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`results`
+-- Table `db-theme-3`.`results`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`results` (
+CREATE TABLE IF NOT EXISTS `db-theme-3`.`results` (
   `id` INT NOT NULL,
   `options_id` INT NOT NULL,
   `users_id` INT NOT NULL,
@@ -109,21 +109,21 @@ CREATE TABLE IF NOT EXISTS `mydb`.`results` (
   INDEX `fk_results_users1_idx` (`users_id` ASC) VISIBLE,
   CONSTRAINT `fk_results_options1`
     FOREIGN KEY (`options_id`)
-    REFERENCES `mydb`.`options` (`id`)
+    REFERENCES `db-theme-3`.`options` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_results_users1`
     FOREIGN KEY (`users_id`)
-    REFERENCES `mydb`.`users` (`id`)
+    REFERENCES `db-theme-3`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`State`
+-- Table `db-theme-3`.`State`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`State` (
+CREATE TABLE IF NOT EXISTS `db-theme-3`.`State` (
   `id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
@@ -131,9 +131,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`actionType`
+-- Table `db-theme-3`.`actionType`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`actionType` (
+CREATE TABLE IF NOT EXISTS `db-theme-3`.`actionType` (
   `id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `description` VARCHAR(45) NOT NULL,
@@ -142,9 +142,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`actions`
+-- Table `db-theme-3`.`actions`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`actions` (
+CREATE TABLE IF NOT EXISTS `db-theme-3`.`actions` (
   `id` INT NOT NULL,
   `actedAt` DATETIME NOT NULL,
   `State_id` INT NOT NULL,
@@ -154,21 +154,21 @@ CREATE TABLE IF NOT EXISTS `mydb`.`actions` (
   INDEX `fk_actions_actionType1_idx` (`actionType_id` ASC) VISIBLE,
   CONSTRAINT `fk_actions_State1`
     FOREIGN KEY (`State_id`)
-    REFERENCES `mydb`.`State` (`id`)
+    REFERENCES `db-theme-3`.`State` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_actions_actionType1`
     FOREIGN KEY (`actionType_id`)
-    REFERENCES `mydb`.`actionType` (`id`)
+    REFERENCES `db-theme-3`.`actionType` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`groups`
+-- Table `db-theme-3`.`groups`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`groups` (
+CREATE TABLE IF NOT EXISTS `db-theme-3`.`groups` (
   `id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `description` VARCHAR(45) NOT NULL,
@@ -183,17 +183,17 @@ CREATE TABLE IF NOT EXISTS `mydb`.`groups` (
   INDEX `fk_groups_quizes1_idx` (`quizes_id` ASC) VISIBLE,
   CONSTRAINT `fk_groups_actions1`
     FOREIGN KEY (`actions_id`)
-    REFERENCES `mydb`.`actions` (`id`)
+    REFERENCES `db-theme-3`.`actions` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_groups_users1`
     FOREIGN KEY (`users_id`)
-    REFERENCES `mydb`.`users` (`id`)
+    REFERENCES `db-theme-3`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_groups_quizes1`
     FOREIGN KEY (`quizes_id`)
-    REFERENCES `mydb`.`quizes` (`id`)
+    REFERENCES `db-theme-3`.`quizes` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -204,11 +204,11 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- -----------------------------------------------------
--- Data for table `mydb`.`role`
+-- Data for table `db-theme-3`.`role`
 -- -----------------------------------------------------
 START TRANSACTION;
-USE `mydb`;
-INSERT INTO `mydb`.`role` (`id`, `name`) VALUES (1, 'Respondent');
-INSERT INTO `mydb`.`role` (`id`, `name`) VALUES (2, 'Interviewer');
+USE `db-theme-3`;
+INSERT INTO `db-theme-3`.`role` (`id`, `name`) VALUES (1, 'Respondent');
+INSERT INTO `db-theme-3`.`role` (`id`, `name`) VALUES (2, 'Interviewer');
 
 COMMIT;
